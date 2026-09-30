@@ -58,6 +58,9 @@ create table if not exists public.products (
   updated_at timestamptz not null default now()
 );
 
+-- YouTube / TikTok link shown as an embedded player on the bike page.
+alter table public.products add column if not exists video_url text;
+
 create index if not exists products_brand_idx on public.products (brand_id);
 create index if not exists products_published_idx on public.products (is_published, created_at desc);
 
@@ -107,6 +110,8 @@ create table if not exists public.inquiries (
   status text not null default 'new' check (status in ('new', 'contacted', 'closed')),
   created_at timestamptz not null default now()
 );
+
+alter table public.inquiries add column if not exists location text;
 
 -- ─────────────────────────── RLS ──────────────────────────
 alter table public.admins enable row level security;
@@ -174,7 +179,9 @@ insert into public.brands (name, slug, tagline, sort_order) values
   ('KTM', 'ktm', 'Ready to race', 5),
   ('Yamaha', 'yamaha', 'Revs your heart', 6),
   ('Ducati', 'ducati', 'Italian performance', 7),
-  ('Haojue', 'haojue', 'Strong & affordable', 8)
+  ('Haojue', 'haojue', 'Strong & affordable', 8),
+  ('Electric Bike', 'electric-bike', 'Zero fuel, all ride', 98),
+  ('Other', 'other', 'More makes in stock', 99)
 on conflict (slug) do nothing;
 
 insert into public.testimonials (name, location, rating, content, bike, sort_order)

@@ -2,12 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductBySlug, getProducts } from "@/lib/data";
-import { formatPrice, PHONE_DISPLAY, whatsappLink } from "@/lib/format";
+import { formatPrice, PHONE_DISPLAY, PHONE_TEL, whatsappLink } from "@/lib/format";
 import { STOCK_LABELS } from "@/lib/types";
+import { parseVideoUrl } from "@/lib/video";
 import { Gallery } from "@/components/site/gallery";
 import { InquiryForm } from "@/components/site/inquiry-form";
 import { ProductCard } from "@/components/site/product-card";
 import { Check, WhatsAppGlyph } from "@/components/icons";
+import { JsonLd } from "@/components/site/json-ld";
+import { SITE } from "@/lib/site";
 
 export const revalidate = 60;
 
@@ -16,11 +19,23 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const p = await getProductBySlug(slug);
-  if (!p) return { title: "Bike not found" };
+  if (!p) return { title: "Bike not found", robots: { index: false } };
+  const title = `${p.name} — ${formatPrice(p.price)}`;
+  const description =
+    p.short_description ??
+    p.description?.slice(0, 160) ??
+    `${p.condition === "new" ? "Brand new" : "Used"} ${p.name} for sale in Tanzania at ${formatPrice(p.price)}. Genuine papers, nationwide delivery.`;
+  const url = `/bikes/${p.slug}`;
+  const images = p.images.slice(0, 4).map((i) => ({ url: i.url, alt: p.name }));
   return {
-    title: `${p.name} — ${formatPrice(p.price)}`,
-    description: p.short_description ?? p.description?.slice(0, 160) ?? undefined,
-    openGraph: { images: p.images[0] ? [p.images[0].url] : [] },
+    title,
+    description,
+    alternates: { canonical: url },
+    // Without a photo, fall through to the site-wide share card.
+    ...(images.length && {
+      openGraph: { title, description, url, type: "website", images },
+      twitter: { card: "summary_large_image", title, description, images: images.map((i) => i.url) },
+    }),
   };
 }
 
@@ -47,10 +62,46 @@ export default async function BikePage({ params }: Props) {
     ["Colour", p.color],
   ];
 
+  const video = parseVideoUrl(p.video_url);
+  const AVAILABILITY = { in_stock: "InStock", low_stock: "LimitedAvailability", sold_out: "SoldOut", pre_order: "PreOrder" } as const;
+  const productLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: p.name,
+    description: p.short_description ?? p.description ?? undefined,
+    image: p.images.map((i) => i.url),
+    url: `${SITE.url}/bikes/${p.slug}`,
+    sku: p.id,
+    category: p.category,
+    color: p.color ?? undefined,
+    brand: p.brand && !["other", "electric-bike"].includes(p.brand.slug) ? { "@type": "Brand", name: p.brand.name } : undefined,
+    itemCondition: p.condition === "new" ? "https://schema.org/NewCondition" : "https://schema.org/UsedCondition",
+    ...(p.price > 0 && {
+      offers: {
+        "@type": "Offer",
+        price: p.price,
+        priceCurrency: "TZS",
+        availability: `https://schema.org/${AVAILABILITY[p.stock_status]}`,
+        url: `${SITE.url}/bikes/${p.slug}`,
+        seller: { "@id": `${SITE.url}/#business` },
+      },
+    }),
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+      { "@type": "ListItem", position: 2, name: "Bikes", item: `${SITE.url}/bikes` },
+      { "@type": "ListItem", position: 3, name: p.name, item: `${SITE.url}/bikes/${p.slug}` },
+    ],
+  };
   const waMsg = `Habari! I'm interested in the ${p.name} listed at ${formatPrice(p.price)}. Is it available?`;
 
   return (
     <div className="mx-auto max-w-7xl px-4 pb-24 pt-24 sm:px-6 lg:pt-32">
+      <JsonLd data={productLd} />
+      <JsonLd data={breadcrumbLd} />
       <nav className="mb-6 text-sm text-mute" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-bone">Home</Link> / <Link href="/bikes" className="hover:text-bone">Bikes</Link> /{" "}
         <span className="text-bone">{p.name}</span>
@@ -88,7 +139,7 @@ export default async function BikePage({ params }: Props) {
               <WhatsAppGlyph className="h-5 w-5" /> Buy on WhatsApp
             </a>
             <a
-              href={`tel:+${PHONE_DISPLAY.replace(/\D/g, "")}`}
+              href={PHONE_TEL}
               className="inline-flex items-center justify-center rounded-full border border-line px-6 py-4 font-bold transition hover:border-bone"
             >
               Call {PHONE_DISPLAY}
@@ -117,6 +168,26 @@ export default async function BikePage({ params }: Props) {
           )}
         </div>
       </div>
+
+      {video && (
+        <section className="mt-16">
+          <h2 className="font-display text-3xl font-black uppercase">Watch it in action</h2>
+          <div
+            className={`mt-6 overflow-hidden rounded-3xl border border-line bg-black ${
+              video.vertical ? "mx-auto aspect-[9/16] max-w-sm" : "aspect-video max-w-4xl"
+            }`}
+          >
+            <iframe
+              src={video.src}
+              title={`${p.name} video`}
+              loading="lazy"
+              className="h-full w-full"
+              allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+              allowFullScreen
+            />
+          </div>
+        </section>
+      )}
 
       <div className="mt-16 grid gap-10 lg:grid-cols-[1.2fr_1fr]">
         {p.description ? (

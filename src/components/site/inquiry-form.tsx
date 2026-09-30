@@ -16,6 +16,7 @@ export function InquiryForm({ productId, productName }: { productId: string; pro
         product_id: productId,
         name: String(form.get("name")).trim(),
         phone: String(form.get("phone")).trim(),
+        location: String(form.get("location") ?? "").trim() || null,
         message: String(form.get("message") ?? "").trim() || null,
       });
     setState(error ? "error" : "sent");
@@ -42,8 +43,12 @@ export function InquiryForm({ productId, productName }: { productId: string; pro
         <input id="inq-phone" name="phone" required type="tel" className="field" placeholder="07XX XXX XXX" autoComplete="tel" />
       </div>
       <div>
+        <label className="label" htmlFor="inq-location">Your location</label>
+        <input id="inq-location" name="location" required className="field" placeholder="e.g. Sinza, Dar es Salaam" autoComplete="address-level2" />
+      </div>
+      <div>
         <label className="label" htmlFor="inq-msg">Message (optional)</label>
-        <textarea id="inq-msg" name="message" rows={3} className="field" placeholder="Payment plan, delivery region, trade-in…" />
+        <textarea id="inq-msg" name="message" rows={3} className="field" placeholder="Payment plan, trade-in, questions…" />
       </div>
       <button disabled={state === "sending"} className="w-full rounded-full bg-ignite py-4 font-extrabold uppercase text-white transition hover:bg-ignite-2 disabled:opacity-60">
         {state === "sending" ? "Sending…" : "Send request"}

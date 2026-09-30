@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { compressImage } from "@/lib/image-compress";
 import { slugify } from "@/lib/format";
+import { parseVideoUrl } from "@/lib/video";
 import { CATEGORIES, STOCK_LABELS, type Brand, type ProductWithRelations } from "@/lib/types";
 import { revalidateSite } from "@/app/admin/actions";
 
@@ -35,12 +36,15 @@ export function ProductForm({ brands, product }: Props) {
   const [slug, setSlug] = useState(product?.slug ?? "");
   const [slugTouched, setSlugTouched] = useState(Boolean(product));
   const [condition, setCondition] = useState(product?.condition ?? "new");
+  const [videoUrl, setVideoUrl] = useState(product?.video_url ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
 
   const uploading = images.some((i) => i.uploading);
+  const video = parseVideoUrl(videoUrl);
+  const videoInvalid = Boolean(videoUrl.trim()) && !video;
 
   async function addFiles(files: FileList | File[]) {
     const list = Array.from(files).filter((f) => f.type.startsWith("image/"));
@@ -86,6 +90,10 @@ export function ProductForm({ brands, product }: Props) {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (uploading) return;
+    if (videoInvalid) {
+      setError("The video link isn't a YouTube or TikTok video link — fix it or clear it.");
+      return;
+    }
     setSaving(true);
     setError(null);
 
@@ -122,6 +130,7 @@ export function ProductForm({ brands, product }: Props) {
         .filter(Boolean),
       is_featured: f.get("is_featured") === "on",
       is_published: f.get("is_published") === "on",
+      video_url: videoUrl.trim() || null,
     };
 
     const { error: upsertError } = await supabase.from("products").upsert(record);
@@ -216,6 +225,27 @@ export function ProductForm({ brands, product }: Props) {
               e.target.value = "";
             }}
           />
+        </Card>
+
+        <Card title="Video" hint="Paste a YouTube or TikTok link — it plays on the bike page.">
+          <input
+            type="url"
+            inputMode="url"
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            className="field"
+            placeholder="https://www.youtube.com/watch?v=… or https://youtube.com/shorts/…"
+          />
+          {videoInvalid && (
+            <p className="mt-2 text-sm text-red-600">
+              Can&apos;t play this link. Use a YouTube link, or a full TikTok link containing /video/ (open the TikTok in a browser and copy that address).
+            </p>
+          )}
+          {video && (
+            <div className={`mt-3 overflow-hidden rounded-xl border border-line bg-black ${video.vertical ? "mx-auto aspect-[9/16] max-w-[280px]" : "aspect-video"}`}>
+              <iframe src={video.src} title="Video preview" className="h-full w-full" allow="encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
+            </div>
+          )}
         </Card>
 
         <Card title="Basics">

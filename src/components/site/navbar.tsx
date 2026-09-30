@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { whatsappLink, PHONE_DISPLAY } from "@/lib/format";
+import { whatsappLink, PHONE_DISPLAY, PHONE_TEL } from "@/lib/format";
 import { WhatsAppGlyph } from "@/components/icons";
 import { Logo } from "@/components/logo";
 
@@ -15,7 +15,7 @@ const LINKS = [
   { href: "/bikes", label: "Shop all" },
 ];
 
-const TEL = `tel:+${PHONE_DISPLAY.replace(/\D/g, "")}`;
+const TEL = PHONE_TEL;
 
 export function Navbar() {
   const pathname = usePathname();

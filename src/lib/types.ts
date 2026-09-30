@@ -39,6 +39,7 @@ export type Product = {
   features: string[];
   is_featured: boolean;
   is_published: boolean;
+  video_url: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -64,10 +65,11 @@ export type Inquiry = {
   product_id: string | null;
   name: string;
   phone: string;
+  location: string | null;
   message: string | null;
   status: "new" | "contacted" | "closed";
   created_at: string;
-  product?: { name: string; slug: string } | null;
+  product?: { name: string; slug: string; images: { url: string; sort_order: number }[] } | null;
 };
 
 export const CATEGORIES = [

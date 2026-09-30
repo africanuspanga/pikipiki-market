@@ -16,9 +16,37 @@ const body = Manrope({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE.url),
   title: { default: `${SITE.name} — Motorbikes for sale in Tanzania`, template: `%s · ${SITE.name}` },
   description: SITE.description,
-  openGraph: { title: SITE.name, description: SITE.description, locale: "en_TZ", type: "website" },
+  applicationName: SITE.name,
+  keywords: [
+    "pikipiki",
+    "pikipiki bei",
+    "motorbikes for sale Tanzania",
+    "motorcycle Dar es Salaam",
+    "boda boda",
+    "Bajaj Boxer",
+    "Honda",
+    "Yamaha",
+    "TVS",
+    "KTM",
+    "Haojue",
+    "Sinoray",
+    "electric motorbike Tanzania",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: `${SITE.name} — Motorbikes for sale in Tanzania`,
+    description: SITE.description,
+    url: "/",
+    siteName: SITE.name,
+    locale: "en_TZ",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image", title: SITE.name, description: SITE.description },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = {

@@ -3,7 +3,13 @@ import { getBrands, getProducts } from "@/lib/data";
 import { BikeBrowser } from "@/components/site/bike-browser";
 
 export const revalidate = 60;
-export const metadata: Metadata = { title: "Shop motorbikes" };
+export const metadata: Metadata = {
+  title: "Shop motorbikes — new & used bikes for sale",
+  description:
+    "Browse new and used motorbikes for sale in Tanzania — Honda, Yamaha, TVS, Bajaj Boxer, KTM, Haojue, Sinoray and electric bikes. Prices in TSh, nationwide delivery.",
+  alternates: { canonical: "/bikes" },
+  openGraph: { url: "/bikes" },
+};
 
 export default async function BikesPage({
   searchParams,

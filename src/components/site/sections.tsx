@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { PHONE_DISPLAY, whatsappLink } from "@/lib/format";
-import { SITE } from "@/lib/site";
+import { PHONE_DISPLAY, PHONE_TEL, whatsappLink } from "@/lib/format";
+import { SITE, SOCIALS } from "@/lib/site";
 import { CATEGORIES } from "@/lib/types";
-import { ArrowRight, Check, WhatsAppGlyph } from "@/components/icons";
+import { ArrowRight, Check, SocialIcon, WhatsAppGlyph } from "@/components/icons";
 import { Logo } from "@/components/logo";
 import { SectionHeading } from "./brands";
 
@@ -153,6 +153,22 @@ export function Footer() {
         <div>
           <Logo />
           <p className="mt-4 max-w-sm text-sm text-mute">{SITE.description}</p>
+          <ul className="mt-6 flex gap-3" aria-label="Follow us">
+            {SOCIALS.map((s) => (
+              <li key={s.name}>
+                <a
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`PikiPiki Market on ${s.name}`}
+                  title={s.name}
+                  className="grid h-10 w-10 place-items-center rounded-full border border-line text-bone/80 transition hover:border-ignite hover:bg-ignite hover:text-white"
+                >
+                  <SocialIcon name={s.name} className="h-[18px] w-[18px]" />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
         <div>
           <h3 className="text-xs font-bold uppercase tracking-widest text-mute">Shop</h3>
@@ -166,7 +182,7 @@ export function Footer() {
         <div>
           <h3 className="text-xs font-bold uppercase tracking-widest text-mute">Contact</h3>
           <ul className="mt-4 space-y-2 text-sm">
-            <li><a href={`tel:+${PHONE_DISPLAY.replace(/\D/g, "")}`} className="hover:text-ignite">{PHONE_DISPLAY}</a></li>
+            <li><a href={PHONE_TEL} className="hover:text-ignite">{PHONE_DISPLAY}</a></li>
             <li><a href={whatsappLink()} target="_blank" rel="noopener noreferrer" className="hover:text-ignite">WhatsApp</a></li>
             <li className="text-mute">{SITE.location}</li>
             <li className="text-mute">Mon – Sat · 8:00 – 18:00</li>

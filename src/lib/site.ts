@@ -7,7 +7,15 @@ export const SITE = {
   /** Studio cut-out used in the hero. */
   heroImage: "/hero-bike.png",
   whatsappIcon: "/whatsapp.png",
+  url: "https://www.pikipikimarket.com",
 };
+
+export const SOCIALS = [
+  { name: "TikTok", href: "https://www.tiktok.com/@pikipiki_market" },
+  { name: "Instagram", href: "https://www.instagram.com/pikipiki_market/" },
+  { name: "Facebook", href: "https://www.facebook.com/share/1DiumfDV8M/" },
+  { name: "YouTube", href: "https://www.youtube.com/@pikipiki_market" },
+] as const;
 
 /** Logos in /public/brands, keyed by brand slug. Brands added later in the admin fall back to a text wordmark. */
 export const BRAND_LOGOS: Record<string, string> = {

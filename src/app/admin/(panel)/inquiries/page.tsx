@@ -7,7 +7,7 @@ export default async function InquiriesPage() {
   const supabase = await createClient();
   const { data } = await supabase
     .from("inquiries")
-    .select("*, product:products(name, slug)")
+    .select("*, product:products(name, slug, images:product_images(url, sort_order))")
     .order("created_at", { ascending: false });
 
   return (

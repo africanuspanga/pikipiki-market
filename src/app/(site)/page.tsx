@@ -18,6 +18,8 @@ export default async function HomePage() {
   const rating = testimonials.length
     ? Math.round((testimonials.reduce((s, t) => s + t.rating, 0) / testimonials.length) * 10) / 10
     : 4.9;
+  // "Other" is a catch-all for filters and the admin, not a brand to show off.
+  const showcaseBrands = brands.filter((b) => b.slug !== "other");
   const counts = products.reduce<Record<string, number>>((acc, p) => {
     if (p.brand_id) acc[p.brand_id] = (acc[p.brand_id] ?? 0) + 1;
     return acc;
@@ -26,7 +28,7 @@ export default async function HomePage() {
   return (
     <>
       <Hero spotlight={spotlight} rating={rating} />
-      <BrandMarquee brands={brands} />
+      <BrandMarquee brands={showcaseBrands} />
 
       <section id="bikes" className="mx-auto max-w-7xl scroll-mt-20 px-4 pb-8 pt-20 sm:px-6 lg:pt-28">
         <SectionHeading
@@ -54,7 +56,7 @@ export default async function HomePage() {
         )}
       </section>
 
-      <BrandGrid brands={brands} counts={counts} />
+      <BrandGrid brands={showcaseBrands} counts={counts} />
       <WhyUs />
       <Testimonials items={testimonials} />
       <HowItWorks />

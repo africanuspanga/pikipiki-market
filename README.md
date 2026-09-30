@@ -22,4 +22,4 @@ Secrets live in `.env.local` (git-ignored — never commit it).
 - Landing page: `src/app/(site)/page.tsx`, sections in `src/components/site/`
 - Admin: `src/app/admin/`, components in `src/components/admin/`
 - Brand logos: `public/brands/<slug>.png` (map in `src/lib/site.ts`)
-- WhatsApp number: `NEXT_PUBLIC_WHATSAPP_NUMBER` in `.env.local`
+- Phone / WhatsApp number: `WHATSAPP_NUMBER` and `PHONE_DISPLAY` in `src/lib/format.ts`
