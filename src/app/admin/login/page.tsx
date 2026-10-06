@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
     <main className="grid min-h-[100svh] place-items-center px-4">
       <form onSubmit={onSubmit} className="w-full max-w-sm space-y-5 rounded-3xl border border-line bg-ink-2 p-7">
         <div>
-          <Image src="/logo.png" alt="PikiPiki Market" width={900} height={442} className="h-auto w-40 rounded-xl bg-white p-2" priority />
+          <Image src="/logo.webp" alt="PikiPiki Market" width={480} height={216} className="h-auto w-40 rounded-xl bg-white p-2" priority />
           <h1 className="mt-4 font-display text-4xl font-black uppercase">Admin sign in</h1>
           <p className="mt-1 text-sm text-mute">PikiPiki Market dashboard</p>
         </div>

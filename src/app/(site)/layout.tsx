@@ -13,7 +13,7 @@ const BUSINESS = {
   description: SITE.description,
   url: SITE.url,
   logo: `${SITE.url}/logo.png`,
-  image: `${SITE.url}/hero-bike.png`,
+  image: `${SITE.url}/hero-bike.webp`,
   telephone: PHONE_DISPLAY.replace(/\s/g, ""),
   priceRange: "TSh",
   currenciesAccepted: "TZS",

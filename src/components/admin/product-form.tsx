@@ -191,7 +191,7 @@ export function ProductForm({ brands, product }: Props) {
           >
             {images.map((img, i) => (
               <div key={img.key} className="group relative aspect-square overflow-hidden rounded-xl border border-line bg-ink-3">
-                <Image src={img.url} alt="" fill sizes="200px" className="object-contain p-1" unoptimized={img.url.startsWith("blob:")} />
+                <Image src={img.url} alt="" fill sizes="200px" className="object-contain p-1" />
                 {i === 0 && <span className="absolute left-2 top-2 rounded-full bg-ignite px-2 py-0.5 text-[10px] font-black uppercase text-white">Cover</span>}
                 {img.uploading && <div className="absolute inset-0 grid place-items-center bg-ink/70 text-xs font-bold">Uploading…</div>}
                 {img.error && <div className="absolute inset-0 grid place-items-center bg-red-900/75 p-2 text-center text-xs font-bold text-white">Upload failed</div>}

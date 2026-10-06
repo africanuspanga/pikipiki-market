@@ -6,7 +6,7 @@ export function Logo({ href = "/", suffix }: { href?: string; suffix?: string })
   return (
     <Link href={href} className="group flex items-center gap-2.5" aria-label="PikiPiki Market home">
       <Image
-        src="/logo-mark.png"
+        src="/logo-mark.webp"
         alt=""
         width={187}
         height={256}
