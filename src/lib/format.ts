@@ -5,6 +5,11 @@ export function formatPrice(value: number | null | undefined) {
   return `TSh ${tzs.format(value)}`;
 }
 
+/** Sold items sink to the bottom; everything else keeps its order (Array.sort is stable). */
+export function soldLast<T extends { stock_status: string }>(items: T[]): T[] {
+  return [...items].sort((a, b) => Number(a.stock_status === "sold_out") - Number(b.stock_status === "sold_out"));
+}
+
 export function slugify(input: string) {
   return input
     .toLowerCase()

@@ -1,20 +1,27 @@
 import Link from "next/link";
-import { getBrands, getProducts, getTestimonials } from "@/lib/data";
+import { getBrands, getProducts, getSpares, getTestimonials } from "@/lib/data";
 import { Hero } from "@/components/site/hero";
 import { BrandGrid, BrandMarquee, SectionHeading } from "@/components/site/brands";
 import { ProductCard } from "@/components/site/product-card";
 import { Categories, CtaBanner, HowItWorks, WhyUs } from "@/components/site/sections";
+import { SparesSection } from "@/components/site/spares";
 import { Testimonials } from "@/components/site/testimonials";
 import { ArrowRight } from "@/components/icons";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [brands, products, testimonials] = await Promise.all([getBrands(), getProducts(), getTestimonials()]);
+  const [brands, products, spares, testimonials] = await Promise.all([
+    getBrands(),
+    getProducts(),
+    getSpares(),
+    getTestimonials(),
+  ]);
 
-  const featured = products.filter((p) => p.is_featured);
-  const showcase = (featured.length >= 3 ? featured : products).slice(0, 6);
-  const spotlight = featured.find((p) => p.images.length) ?? products.find((p) => p.images.length) ?? null;
+  const available = products.filter((p) => p.stock_status !== "sold_out");
+  const featured = available.filter((p) => p.is_featured);
+  const showcase = (featured.length >= 3 ? featured : available).slice(0, 6);
+  const spotlight = featured.find((p) => p.images.length) ?? available.find((p) => p.images.length) ?? null;
   const rating = testimonials.length
     ? Math.round((testimonials.reduce((s, t) => s + t.rating, 0) / testimonials.length) * 10) / 10
     : 4.9;
@@ -56,6 +63,7 @@ export default async function HomePage() {
         )}
       </section>
 
+      <SparesSection spares={spares} />
       <BrandGrid brands={showcaseBrands} counts={counts} />
       <WhyUs />
       <Testimonials items={testimonials} />

@@ -113,6 +113,29 @@ create table if not exists public.inquiries (
 
 alter table public.inquiries add column if not exists location text;
 
+-- ───────────────── Spares & accessories ───────────────────
+create table if not exists public.spares (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  category text not null default 'Spare part',
+  price numeric(14, 0) not null default 0,
+  old_price numeric(14, 0),
+  fits text, -- which bikes the part fits, e.g. "Boxer 150, TVS HLX"
+  description text,
+  image_url text,
+  storage_path text,
+  stock_status text not null default 'in_stock' check (stock_status in ('in_stock', 'sold_out')),
+  is_published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists spares_published_idx on public.spares (is_published, created_at desc);
+
+drop trigger if exists spares_touch on public.spares;
+create trigger spares_touch before update on public.spares
+  for each row execute function public.touch_updated_at();
+
 -- ─────────────────────────── RLS ──────────────────────────
 alter table public.admins enable row level security;
 alter table public.brands enable row level security;
@@ -120,6 +143,7 @@ alter table public.products enable row level security;
 alter table public.product_images enable row level security;
 alter table public.testimonials enable row level security;
 alter table public.inquiries enable row level security;
+alter table public.spares enable row level security;
 
 drop policy if exists "admins read self" on public.admins;
 create policy "admins read self" on public.admins for select using (user_id = auth.uid());
@@ -148,6 +172,11 @@ drop policy if exists "inquiries public insert" on public.inquiries;
 create policy "inquiries public insert" on public.inquiries for insert with check (true);
 drop policy if exists "inquiries admin all" on public.inquiries;
 create policy "inquiries admin all" on public.inquiries for all using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "spares public read" on public.spares;
+create policy "spares public read" on public.spares for select using (is_published or public.is_admin());
+drop policy if exists "spares admin write" on public.spares;
+create policy "spares admin write" on public.spares for all using (public.is_admin()) with check (public.is_admin());
 
 -- ───────────────────────── Storage ────────────────────────
 insert into storage.buckets (id, name, public)

@@ -10,10 +10,11 @@ export default async function AdminDashboard() {
     return q.then((r) => r.count ?? 0);
   };
 
-  const [products, published, soldOut, newLeads, reviews, recent] = await Promise.all([
+  const [products, published, soldOut, spares, newLeads, reviews, recent] = await Promise.all([
     count("products"),
     count("products", ["is_published", true]),
     count("products", ["stock_status", "sold_out"]),
+    count("spares"),
     count("inquiries", ["status", "new"]),
     count("testimonials"),
     supabase
@@ -26,7 +27,8 @@ export default async function AdminDashboard() {
   const stats = [
     { label: "Total bikes", value: products, href: "/admin/products" },
     { label: "Live on site", value: published, href: "/admin/products" },
-    { label: "Sold out", value: soldOut, href: "/admin/products" },
+    { label: "Sold", value: soldOut, href: "/admin/products" },
+    { label: "Spares", value: spares, href: "/admin/spares" },
     { label: "New leads", value: newLeads, href: "/admin/inquiries", hot: newLeads > 0 },
     { label: "Reviews", value: reviews, href: "/admin/testimonials" },
   ];
@@ -42,7 +44,7 @@ export default async function AdminDashboard() {
           </Link>
         }
       />
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
         {stats.map((s) => (
           <Link key={s.label} href={s.href} className={`rounded-2xl border p-4 transition hover:border-ignite ${s.hot ? "border-ignite bg-ignite/10" : "border-line bg-ink-2"}`}>
             <p className="text-xs uppercase tracking-widest text-mute">{s.label}</p>

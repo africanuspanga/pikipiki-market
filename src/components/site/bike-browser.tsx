@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { soldLast } from "@/lib/format";
 import { CATEGORIES, type Brand, type ProductWithRelations } from "@/lib/types";
 import { ProductCard } from "./product-card";
 
@@ -38,7 +39,7 @@ export function BikeBrowser({
     if (sort === "price-asc") out.sort((a, b) => a.price - b.price);
     if (sort === "price-desc") out.sort((a, b) => b.price - a.price);
     if (sort === "newest") out.sort((a, b) => b.created_at.localeCompare(a.created_at));
-    return out;
+    return soldLast(out);
   }, [products, f, sort]);
 
   const active = Object.values(f).some(Boolean);

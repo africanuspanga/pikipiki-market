@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, soldLast } from "@/lib/format";
 import { STOCK_LABELS, type ProductWithRelations } from "@/lib/types";
 import { revalidateSite } from "@/app/admin/actions";
 
@@ -16,7 +16,7 @@ export function ProductTable({ products }: { products: ProductWithRelations[] })
 
   const list = useMemo(() => {
     const s = q.trim().toLowerCase();
-    return s ? products.filter((p) => `${p.name} ${p.brand?.name ?? ""}`.toLowerCase().includes(s)) : products;
+    return soldLast(s ? products.filter((p) => `${p.name} ${p.brand?.name ?? ""}`.toLowerCase().includes(s)) : products);
   }, [products, q]);
 
   async function update(id: string, patch: Partial<ProductWithRelations>) {
@@ -84,6 +84,11 @@ export function ProductTable({ products }: { products: ProductWithRelations[] })
                   <option key={k} value={k}>{v}</option>
                 ))}
               </select>
+              <Toggle
+                on={p.stock_status === "sold_out"}
+                onClick={() => update(p.id, { stock_status: p.stock_status === "sold_out" ? "in_stock" : "sold_out" })}
+                label={p.stock_status === "sold_out" ? "Sold ✓" : "Mark sold"}
+              />
               <Toggle on={p.is_featured} onClick={() => update(p.id, { is_featured: !p.is_featured })} label="Featured" />
               <Toggle on={p.is_published} onClick={() => update(p.id, { is_published: !p.is_published })} label={p.is_published ? "Live" : "Hidden"} />
               <Link href={`/admin/products/${p.id}`} className="rounded-full border border-line px-3 py-2 font-semibold hover:border-bone">Edit</Link>

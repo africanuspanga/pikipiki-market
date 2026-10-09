@@ -1,5 +1,6 @@
 import { createPublicClient } from "@/lib/supabase/server";
-import type { Brand, ProductWithRelations, Testimonial } from "@/lib/types";
+import { soldLast } from "@/lib/format";
+import type { Brand, ProductWithRelations, Spare, Testimonial } from "@/lib/types";
 
 const PRODUCT_SELECT = "*, brand:brands(*), images:product_images(*)";
 
@@ -24,7 +25,7 @@ export async function getProducts(opts: { featured?: boolean; limit?: number } =
   if (opts.limit) q = q.limit(opts.limit);
   const { data, error } = await q;
   if (error) console.error("getProducts", error.message);
-  return ((data ?? []) as ProductWithRelations[]).map(sortImages);
+  return soldLast(((data ?? []) as ProductWithRelations[]).map(sortImages));
 }
 
 export async function getProductBySlug(slug: string) {
@@ -46,4 +47,14 @@ export async function getTestimonials(): Promise<Testimonial[]> {
     .order("sort_order");
   if (error) console.error("getTestimonials", error.message);
   return (data ?? []).map((t) => ({ ...t, rating: Number(t.rating) }));
+}
+
+export async function getSpares(): Promise<Spare[]> {
+  const { data, error } = await createPublicClient()
+    .from("spares")
+    .select("*")
+    .eq("is_published", true)
+    .order("created_at", { ascending: false });
+  if (error) console.error("getSpares", error.message);
+  return soldLast((data ?? []) as Spare[]);
 }

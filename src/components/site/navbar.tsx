@@ -11,7 +11,7 @@ const LINKS = [
   { href: "/#bikes", label: "Bikes" },
   { href: "/#brands", label: "Brands" },
   { href: "/#why", label: "Why us" },
-  { href: "/#reviews", label: "Reviews" },
+  { href: "/spares", label: "Spares & Accessories" },
   { href: "/bikes", label: "Shop all" },
 ];
 
@@ -40,7 +40,7 @@ export function Navbar() {
       >
         <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:h-20">
           <Logo />
-          <ul className="hidden items-center gap-8 text-sm font-medium text-bone/80 lg:flex">
+          <ul className="hidden items-center gap-6 whitespace-nowrap text-sm font-medium text-bone/80 lg:flex xl:gap-8">
             {LINKS.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="transition-colors hover:text-ignite">
@@ -80,7 +80,7 @@ const ICONS = {
   home: "M3 11.5 12 4l9 7.5M5.5 9.5V20h5v-5.5h3V20h5V9.5",
   shop: "M2 16.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0M15 16.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0M5.5 16.5 9 10h5.5l4 6.5M9 10 7.5 7H5M14.5 10l1.5-3h2.5M9 10l3 6.5h3",
   brands: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z",
-  reviews: "M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9l-5.2 2.8 1-5.9-4.3-4.1 5.9-.8z",
+  spares: "M14.7 6.3a4 4 0 0 0-5.4 5.4L3.5 17.5a1.8 1.8 0 0 0 2.5 2.5l5.8-5.8a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.3-.2-.2-2.3z",
   phone: "M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2",
 };
 
@@ -90,7 +90,7 @@ const DOCK: DockItem[] = [
   { key: "home", href: "/", label: "Home", icon: ICONS.home },
   { key: "shop", href: "/bikes", label: "Shop", icon: ICONS.shop },
   { key: "brands", href: "/#brands", label: "Brands", icon: ICONS.brands },
-  { key: "reviews", href: "/#reviews", label: "Reviews", icon: ICONS.reviews },
+  { key: "spares", href: "/spares", label: "Spares", icon: ICONS.spares },
 ];
 
 /** Floating bottom tab bar for phones — black pill, active tab in a red gradient tile. */
@@ -102,7 +102,7 @@ function MobileDock() {
   useEffect(() => {
     if (pathname !== "/") return;
     // Section ids in page order, mapped to the tab they belong to.
-    const sections: [string, string][] = [["brands", "brands"], ["bikes", "home"], ["why", "home"], ["reviews", "reviews"]];
+    const sections: [string, string][] = [["brands", "brands"], ["bikes", "home"], ["spares", "spares"], ["why", "home"]];
     const onScroll = () => {
       const mid = window.innerHeight * 0.5;
       let current = "home";
@@ -117,7 +117,13 @@ function MobileDock() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [pathname]);
 
-  const active = pathname.startsWith("/bikes") ? "shop" : pathname === "/" ? section : "";
+  const active = pathname.startsWith("/bikes")
+    ? "shop"
+    : pathname.startsWith("/spares")
+      ? "spares"
+      : pathname === "/"
+        ? section
+        : "";
 
   return (
     <nav

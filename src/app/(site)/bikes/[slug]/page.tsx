@@ -45,7 +45,7 @@ export default async function BikePage({ params }: Props) {
   if (!p) notFound();
 
   const related = (await getProducts({ limit: 12 }))
-    .filter((x) => x.id !== p.id && (x.brand_id === p.brand_id || x.category === p.category))
+    .filter((x) => x.id !== p.id && x.stock_status !== "sold_out" && (x.brand_id === p.brand_id || x.category === p.category))
     .slice(0, 3);
 
   const specs: [string, string | null][] = [
@@ -96,7 +96,10 @@ export default async function BikePage({ params }: Props) {
       { "@type": "ListItem", position: 3, name: p.name, item: `${SITE.url}/bikes/${p.slug}` },
     ],
   };
-  const waMsg = `Habari! I'm interested in the ${p.name} listed at ${formatPrice(p.price)}. Is it available?`;
+  const sold = p.stock_status === "sold_out";
+  const waMsg = sold
+    ? `Habari! I saw the ${p.name} is sold. Do you have a similar bike?`
+    : `Habari! I'm interested in the ${p.name} listed at ${formatPrice(p.price)}. Is it available?`;
 
   return (
     <div className="mx-auto max-w-7xl px-4 pb-24 pt-24 sm:px-6 lg:pt-32">
@@ -117,7 +120,7 @@ export default async function BikePage({ params }: Props) {
                 {p.brand.name}
               </Link>
             )}
-            <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest ${p.stock_status === "sold_out" ? "bg-line text-mute" : "bg-ignite/15 text-ignite"}`}>
+            <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest ${sold ? "bg-line text-mute" : "bg-ignite/15 text-ignite"}`}>
               {STOCK_LABELS[p.stock_status]}
             </span>
           </div>
@@ -129,6 +132,12 @@ export default async function BikePage({ params }: Props) {
             {p.old_price && p.old_price > p.price && <p className="pb-1.5 text-lg text-mute line-through">{formatPrice(p.old_price)}</p>}
           </div>
 
+          {sold && (
+            <p className="mt-6 rounded-2xl border border-line bg-ink-2 px-5 py-4 text-sm text-bone/80">
+              This bike has been sold. Many of our bikes are one of a kind — message us and we&apos;ll find you something similar.
+            </p>
+          )}
+
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
             <a
               href={whatsappLink(waMsg)}
@@ -136,7 +145,7 @@ export default async function BikePage({ params }: Props) {
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-6 py-4 font-extrabold text-night transition hover:brightness-110"
             >
-              <WhatsAppGlyph className="h-5 w-5" /> Buy on WhatsApp
+              <WhatsAppGlyph className="h-5 w-5" /> {sold ? "Ask for a similar bike" : "Buy on WhatsApp"}
             </a>
             <a
               href={PHONE_TEL}

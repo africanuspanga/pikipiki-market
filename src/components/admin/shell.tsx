@@ -8,6 +8,7 @@ import { Logo } from "@/components/logo";
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: "M3 12l9-9 9 9M5 10v10h14V10" },
   { href: "/admin/products", label: "Bikes", icon: "M2 16.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0M15 16.5a3.5 3.5 0 1 0 7 0a3.5 3.5 0 1 0-7 0M5.5 16.5 9 10h5.5l4 6.5M9 10 7.5 7H5M14.5 10l1.5-3h2.5M9 10l3 6.5h3" },
+  { href: "/admin/spares", label: "Spares", icon: "M14.7 6.3a4 4 0 0 0-5.4 5.4L3.5 17.5a1.8 1.8 0 0 0 2.5 2.5l5.8-5.8a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.3-.2-.2-2.3z" },
   { href: "/admin/inquiries", label: "Leads", icon: "M4 6h16v12H4zM4 7l8 6 8-6" },
   { href: "/admin/testimonials", label: "Reviews", icon: "M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" },
   { href: "/admin/brands", label: "Brands", icon: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" },
@@ -69,12 +70,12 @@ export function AdminShell({ email, children }: { email: string; children: React
       <main className="min-w-0 px-4 pb-28 pt-6 sm:px-6 lg:px-10 lg:pb-12 lg:pt-10">{children}</main>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-line bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-line bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
         {NAV.map((n) => (
           <Link
             key={n.href}
             href={n.href}
-            className={`flex flex-col items-center gap-1 py-2.5 text-[11px] font-semibold ${isActive(n.href) ? "text-ignite" : "text-mute"}`}
+            className={`flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold ${isActive(n.href) ? "text-ignite" : "text-mute"}`}
           >
             <Icon d={n.icon} />
             {n.label}

@@ -72,6 +72,34 @@ export type Inquiry = {
   product?: { name: string; slug: string; images: { url: string; sort_order: number }[] } | null;
 };
 
+export type Spare = {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  old_price: number | null;
+  fits: string | null;
+  description: string | null;
+  image_url: string | null;
+  storage_path: string | null;
+  stock_status: "in_stock" | "sold_out";
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export const SPARE_CATEGORIES = [
+  "Spare part",
+  "Engine",
+  "Brakes",
+  "Tyres & wheels",
+  "Electrical",
+  "Body parts",
+  "Oils & lubricants",
+  "Helmets & gear",
+  "Accessories",
+] as const;
+
 export const CATEGORIES = [
   "Commuter",
   "Boda Boda",
@@ -86,6 +114,6 @@ export const CATEGORIES = [
 export const STOCK_LABELS: Record<StockStatus, string> = {
   in_stock: "In stock",
   low_stock: "Few left",
-  sold_out: "Sold out",
+  sold_out: "Sold",
   pre_order: "Pre-order",
 };

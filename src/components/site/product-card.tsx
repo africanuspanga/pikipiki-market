@@ -13,7 +13,7 @@ export function ProductCard({ product, priority = false }: { product: ProductWit
   const soldOut = product.stock_status === "sold_out";
 
   return (
-    <article className="group relative flex flex-col overflow-hidden rounded-3xl border border-line bg-ink-2 transition duration-300 hover:-translate-y-1 hover:border-ignite/60 hover:shadow-[0_30px_60px_-30px_rgba(227,13,25,0.45)]">
+    <article className={`group relative flex flex-col ${soldOut ? "opacity-75" : ""} overflow-hidden rounded-3xl border border-line bg-ink-2 transition duration-300 hover:-translate-y-1 hover:border-ignite/60 hover:shadow-[0_30px_60px_-30px_rgba(227,13,25,0.45)]`}>
       <Link href={`/bikes/${product.slug}`} className="relative block aspect-square overflow-hidden bg-ink-3">
         {img ? (
           <Image
@@ -37,7 +37,14 @@ export function ProductCard({ product, priority = false }: { product: ProductWit
             <span className="rounded-full bg-savanna px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-night">Used</span>
           )}
         </div>
-        {discount ? (
+        {soldOut && (
+          <div className="absolute inset-0 grid place-items-center bg-night/45">
+            <span className="-rotate-12 rounded-lg border-4 border-white px-5 py-1 font-display text-4xl font-black uppercase tracking-widest text-white">
+              Sold
+            </span>
+          </div>
+        )}
+        {soldOut ? null : discount ? (
           <span className="absolute right-3 top-3 rounded-full bg-ignite px-3 py-1 text-[11px] font-black text-white">-{discount}%</span>
         ) : product.stock_status !== "in_stock" ? (
           <span className="absolute right-3 top-3 rounded-full border border-line bg-ink/80 px-3 py-1 text-[11px] font-bold text-bone backdrop-blur">
@@ -80,7 +87,11 @@ export function ProductCard({ product, priority = false }: { product: ProductWit
             View details <ArrowRight className="h-4 w-4" />
           </Link>
           <a
-            href={whatsappLink(`Habari! Is the ${product.name} (${formatPrice(product.price)}) available?`)}
+            href={whatsappLink(
+              soldOut
+                ? `Habari! I saw the ${product.name} is sold. Do you have a similar bike?`
+                : `Habari! Is the ${product.name} (${formatPrice(product.price)}) available?`,
+            )}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Ask about ${product.name} on WhatsApp`}

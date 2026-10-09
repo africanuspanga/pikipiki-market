@@ -38,10 +38,10 @@ Secrets are in `.env.local`, which is git-ignored and must never be committed: S
 ## Layout
 
 ```
-src/app/(site)/            public site: home, /bikes (filters), /bikes/[slug] (detail)
+src/app/(site)/            public site: home, /bikes (filters), /bikes/[slug] (detail), /spares
 src/app/(site)/layout.tsx  navbar, footer, WhatsApp float, MotorcycleDealer JSON-LD
 src/app/admin/login        admin sign-in
-src/app/admin/(panel)/     dashboard, products, brands, testimonials, inquiries (leads)
+src/app/admin/(panel)/     dashboard, products, spares, brands, testimonials, inquiries (leads)
 src/app/layout.tsx         root metadata (metadataBase = SITE.url), fonts
 src/app/sitemap.ts, robots.ts, opengraph-image.tsx   SEO
 src/components/site/       public UI sections
@@ -61,6 +61,7 @@ supabase/schema.sql        tables, RLS, storage policies, seed brands/reviews
 - `brands`: name, slug, tagline, sort_order. Includes "Electric Bike" (98) and "Other" (99). "Other" is hidden from the homepage marquee and brand grid.
 - `products`: specs, price/old_price, condition new/used, stock_status, features[], is_featured, is_published, `video_url` (YouTube/TikTok).
 - `product_images`: ordered photos. The first one is the cover. Files live in Storage and are compressed to WebP in the browser before upload.
+- `spares`: spare parts & accessories (name, category, price/old_price, fits, one photo in `image_url`/`storage_path` under `spares/{id}/` in the same bucket, stock_status in_stock/sold_out, is_published). Shown on the homepage and `/spares`.
 - `testimonials`: reviews shown on the homepage.
 - `inquiries`: call-back leads (name, phone, `location`, message, status new/contacted/closed, product_id). The public can only insert. Only admins can read or change them.
 - `admins` + `is_admin()`: controls all write access.
@@ -77,6 +78,7 @@ Edit `supabase/schema.sql` only, and keep it safe to re-run (`add column if not 
 
 ## Features that need care
 
+- **Sold items**: many bikes are one-of-one, so `stock_status = 'sold_out'` (labelled "Sold") keeps the listing visible but always sorted last (`soldLast` in `src/lib/format.ts`) and never featured, spotlighted or shown as related. Admins toggle it with "Mark sold" on the bikes and spares lists.
 - **Leads** (`/admin/inquiries`): shows the requested bike's cover photo, the location, and Call/WhatsApp buttons. "Download Excel" exports the current tab as `.xlsx` with phones normalised to `255XXXXXXXXX` for bulk SMS.
 - **Video**: the admin pastes a link. `parseVideoUrl` supports youtube.com/watch, youtu.be, /shorts, /embed and tiktok.com/…/video/ID. Short links (`vm.tiktok.com`) are rejected. The bike page embeds it with youtube-nocookie.
 - **SEO**: every page has a canonical URL. Bike pages include Product + BreadcrumbList JSON-LD and use their own photos for OpenGraph. The rest use the generated share card. `/admin` is disallowed in robots and set to noindex.
