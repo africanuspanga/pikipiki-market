@@ -88,6 +88,14 @@ export type Spare = {
   updated_at: string;
 };
 
+/** Row in `site_settings`. Keys: "hero_image" (homepage hero bike photo URL). */
+export type SiteSetting = {
+  key: string;
+  value: string | null;
+  storage_path: string | null;
+  updated_at: string;
+};
+
 export const SPARE_CATEGORIES = [
   "Spare part",
   "Engine",

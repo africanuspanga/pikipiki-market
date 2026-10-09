@@ -12,6 +12,7 @@ const NAV = [
   { href: "/admin/inquiries", label: "Leads", icon: "M4 6h16v12H4zM4 7l8 6 8-6" },
   { href: "/admin/testimonials", label: "Reviews", icon: "M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" },
   { href: "/admin/brands", label: "Brands", icon: "M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z" },
+  { href: "/admin/hero", label: "Hero", icon: "M3 5h18v14H3zM3 16l5-5 4 4 3-3 6 6M15.5 9.5a1 1 0 1 0 0-.01" },
 ];
 
 function Icon({ d }: { d: string }) {
@@ -70,7 +71,7 @@ export function AdminShell({ email, children }: { email: string; children: React
       <main className="min-w-0 px-4 pb-28 pt-6 sm:px-6 lg:px-10 lg:pb-12 lg:pt-10">{children}</main>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t border-line bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-7 border-t border-line bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden">
         {NAV.map((n) => (
           <Link
             key={n.href}

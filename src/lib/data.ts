@@ -1,6 +1,6 @@
 import { createPublicClient } from "@/lib/supabase/server";
 import { soldLast } from "@/lib/format";
-import type { Brand, ProductWithRelations, Spare, Testimonial } from "@/lib/types";
+import type { Brand, ProductWithRelations, SiteSetting, Spare, Testimonial } from "@/lib/types";
 
 const PRODUCT_SELECT = "*, brand:brands(*), images:product_images(*)";
 
@@ -57,4 +57,15 @@ export async function getSpares(): Promise<Spare[]> {
     .order("created_at", { ascending: false });
   if (error) console.error("getSpares", error.message);
   return soldLast((data ?? []) as Spare[]);
+}
+
+/** Hero bike photo uploaded in the admin, or null to use the built-in one. */
+export async function getHeroImage(): Promise<string | null> {
+  const { data, error } = await createPublicClient()
+    .from("site_settings")
+    .select("value")
+    .eq("key", "hero_image")
+    .maybeSingle<Pick<SiteSetting, "value">>();
+  if (error) console.error("getHeroImage", error.message);
+  return data?.value || null;
 }

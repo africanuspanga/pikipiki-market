@@ -136,6 +136,19 @@ drop trigger if exists spares_touch on public.spares;
 create trigger spares_touch before update on public.spares
   for each row execute function public.touch_updated_at();
 
+-- ───────────────────── Site settings ──────────────────────
+-- Key/value settings the admin can change, e.g. key 'hero_image' = the homepage hero bike photo.
+create table if not exists public.site_settings (
+  key text primary key,
+  value text,
+  storage_path text, -- set when value is a file in the product-images bucket
+  updated_at timestamptz not null default now()
+);
+
+drop trigger if exists site_settings_touch on public.site_settings;
+create trigger site_settings_touch before update on public.site_settings
+  for each row execute function public.touch_updated_at();
+
 -- ─────────────────────────── RLS ──────────────────────────
 alter table public.admins enable row level security;
 alter table public.brands enable row level security;
@@ -144,6 +157,7 @@ alter table public.product_images enable row level security;
 alter table public.testimonials enable row level security;
 alter table public.inquiries enable row level security;
 alter table public.spares enable row level security;
+alter table public.site_settings enable row level security;
 
 drop policy if exists "admins read self" on public.admins;
 create policy "admins read self" on public.admins for select using (user_id = auth.uid());
@@ -177,6 +191,11 @@ drop policy if exists "spares public read" on public.spares;
 create policy "spares public read" on public.spares for select using (is_published or public.is_admin());
 drop policy if exists "spares admin write" on public.spares;
 create policy "spares admin write" on public.spares for all using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "site settings public read" on public.site_settings;
+create policy "site settings public read" on public.site_settings for select using (true);
+drop policy if exists "site settings admin write" on public.site_settings;
+create policy "site settings admin write" on public.site_settings for all using (public.is_admin()) with check (public.is_admin());
 
 -- ───────────────────────── Storage ────────────────────────
 insert into storage.buckets (id, name, public)

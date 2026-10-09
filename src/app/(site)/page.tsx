@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getBrands, getProducts, getSpares, getTestimonials } from "@/lib/data";
+import { getBrands, getHeroImage, getProducts, getSpares, getTestimonials } from "@/lib/data";
 import { Hero } from "@/components/site/hero";
 import { BrandGrid, BrandMarquee, SectionHeading } from "@/components/site/brands";
 import { ProductCard } from "@/components/site/product-card";
@@ -11,11 +11,12 @@ import { ArrowRight } from "@/components/icons";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [brands, products, spares, testimonials] = await Promise.all([
+  const [brands, products, spares, testimonials, heroImage] = await Promise.all([
     getBrands(),
     getProducts(),
     getSpares(),
     getTestimonials(),
+    getHeroImage(),
   ]);
 
   const available = products.filter((p) => p.stock_status !== "sold_out");
@@ -34,7 +35,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero spotlight={spotlight} rating={rating} />
+      <Hero image={heroImage} spotlight={spotlight} rating={rating} />
       <BrandMarquee brands={showcaseBrands} />
 
       <section id="bikes" className="mx-auto max-w-7xl scroll-mt-20 px-4 pb-8 pt-20 sm:px-6 lg:pt-28">

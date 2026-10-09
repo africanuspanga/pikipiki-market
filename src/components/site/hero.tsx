@@ -5,8 +5,16 @@ import { SITE } from "@/lib/site";
 import type { ProductWithRelations } from "@/lib/types";
 import { ArrowRight, GoogleG, Stars, WhatsAppGlyph } from "@/components/icons";
 
-export function Hero({ spotlight, rating }: { spotlight: ProductWithRelations | null; rating: number }) {
-  const image = SITE.heroImage;
+export function Hero({
+  image,
+  spotlight,
+  rating,
+}: {
+  /** Photo uploaded in the admin; falls back to the built-in cut-out. */
+  image: string | null;
+  spotlight: ProductWithRelations | null;
+  rating: number;
+}) {
 
   return (
     <section className="theme-dark grain relative isolate flex bg-ink min-h-[100svh] flex-col overflow-hidden pt-16 lg:max-h-[1000px] lg:min-h-[760px] lg:pt-20">
@@ -82,7 +90,7 @@ export function Hero({ spotlight, rating }: { spotlight: ProductWithRelations | 
           <div className="anim-ride relative mx-auto aspect-[4/3] w-full max-w-2xl lg:scale-110">
             <div className="absolute inset-x-[12%] bottom-[8%] h-[12%] rounded-[50%] bg-black/80 blur-2xl" />
             <Image
-              src={image}
+              src={image ?? SITE.heroImage}
               alt="Superbike available at PikiPiki Market"
               fill
               priority
