@@ -137,7 +137,7 @@ create trigger spares_touch before update on public.spares
   for each row execute function public.touch_updated_at();
 
 -- ───────────────────── Site settings ──────────────────────
--- Key/value settings the admin can change, e.g. key 'hero_image' = the homepage hero bike photo.
+-- Key/value settings the admin can change, e.g. keys 'hero_image', 'hero_image_2', 'hero_image_3' = homepage hero slider photos.
 create table if not exists public.site_settings (
   key text primary key,
   value text,

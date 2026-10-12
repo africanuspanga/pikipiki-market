@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getSpares } from "@/lib/data";
 import { whatsappLink } from "@/lib/format";
 import { SparesGrid } from "@/components/site/spares";
+import { SpareOrderForm } from "@/components/site/spare-order-form";
 import { WhatsAppGlyph } from "@/components/icons";
 
 export const revalidate = 60;
@@ -25,16 +26,27 @@ export default async function SparesPage() {
       <p className="mt-4 max-w-xl text-bone/70">
         Can&apos;t see the part you need? Send us the bike model on WhatsApp and we&apos;ll check stock for you.
       </p>
-      <a
-        href={whatsappLink("Habari! I'm looking for a spare part.")}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-extrabold text-night transition hover:brightness-110"
-      >
-        <WhatsAppGlyph className="h-5 w-5" /> Ask for a part
-      </a>
+      <div className="mt-6 flex flex-wrap gap-3">
+        <a
+          href="#order"
+          className="inline-flex items-center gap-2 rounded-full bg-ignite px-6 py-3 font-extrabold uppercase text-white transition hover:bg-ignite-2"
+        >
+          Order a part
+        </a>
+        <a
+          href={whatsappLink("Habari! I'm looking for a spare part.")}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-extrabold text-night transition hover:brightness-110"
+        >
+          <WhatsAppGlyph className="h-5 w-5" /> Ask for a part
+        </a>
+      </div>
       <div className="mt-10">
         <SparesGrid spares={spares} />
+      </div>
+      <div className="mx-auto mt-16 max-w-2xl">
+        <SpareOrderForm spares={spares} />
       </div>
     </div>
   );

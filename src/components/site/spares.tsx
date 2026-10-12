@@ -91,6 +91,12 @@ export function SparesSection({ spares }: { spares: Spare[] }) {
       <div className="mt-10">
         <SparesGrid spares={spares.slice(0, 8)} />
       </div>
+      <Link
+        href="/spares#order"
+        className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-extrabold uppercase text-night transition hover:brightness-110"
+      >
+        <WhatsAppGlyph className="h-5 w-5" /> Order a part
+      </Link>
     </section>
   );
 }

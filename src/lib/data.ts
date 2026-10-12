@@ -1,6 +1,6 @@
 import { createPublicClient } from "@/lib/supabase/server";
 import { soldLast } from "@/lib/format";
-import type { Brand, ProductWithRelations, SiteSetting, Spare, Testimonial } from "@/lib/types";
+import { HERO_KEYS, type Brand, type ProductWithRelations, type SiteSetting, type Spare, type Testimonial } from "@/lib/types";
 
 const PRODUCT_SELECT = "*, brand:brands(*), images:product_images(*)";
 
@@ -59,13 +59,13 @@ export async function getSpares(): Promise<Spare[]> {
   return soldLast((data ?? []) as Spare[]);
 }
 
-/** Hero bike photo uploaded in the admin, or null to use the built-in one. */
-export async function getHeroImage(): Promise<string | null> {
+/** Hero slider photos uploaded in the admin (slot order), or [] to use the built-in one. */
+export async function getHeroImages(): Promise<string[]> {
   const { data, error } = await createPublicClient()
     .from("site_settings")
-    .select("value")
-    .eq("key", "hero_image")
-    .maybeSingle<Pick<SiteSetting, "value">>();
-  if (error) console.error("getHeroImage", error.message);
-  return data?.value || null;
+    .select("key, value")
+    .in("key", [...HERO_KEYS]);
+  if (error) console.error("getHeroImages", error.message);
+  const rows = (data ?? []) as Pick<SiteSetting, "key" | "value">[];
+  return HERO_KEYS.map((k) => rows.find((r) => r.key === k)?.value).filter((v): v is string => !!v);
 }

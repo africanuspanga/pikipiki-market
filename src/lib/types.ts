@@ -88,13 +88,16 @@ export type Spare = {
   updated_at: string;
 };
 
-/** Row in `site_settings`. Keys: "hero_image" (homepage hero bike photo URL). */
+/** Row in `site_settings`. Keys: HERO_KEYS (homepage hero slider photo URLs). */
 export type SiteSetting = {
   key: string;
   value: string | null;
   storage_path: string | null;
   updated_at: string;
 };
+
+/** The homepage hero slides through up to three photos, in this order. */
+export const HERO_KEYS = ["hero_image", "hero_image_2", "hero_image_3"] as const;
 
 export const SPARE_CATEGORIES = [
   "Spare part",

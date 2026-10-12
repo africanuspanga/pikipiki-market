@@ -1,17 +1,17 @@
-import Image from "next/image";
 import Link from "next/link";
 import { formatPrice, whatsappLink } from "@/lib/format";
 import { SITE } from "@/lib/site";
 import type { ProductWithRelations } from "@/lib/types";
 import { ArrowRight, GoogleG, Stars, WhatsAppGlyph } from "@/components/icons";
+import { HeroSlider } from "./hero-slider";
 
 export function Hero({
-  image,
+  images,
   spotlight,
   rating,
 }: {
-  /** Photo uploaded in the admin; falls back to the built-in cut-out. */
-  image: string | null;
+  /** Slider photos uploaded in the admin; falls back to the built-in cut-out. */
+  images: string[];
   spotlight: ProductWithRelations | null;
   rating: number;
 }) {
@@ -89,14 +89,7 @@ export function Hero({
         <div className="relative order-1 lg:order-2">
           <div className="anim-ride relative mx-auto aspect-[4/3] w-full max-w-2xl lg:scale-110">
             <div className="absolute inset-x-[12%] bottom-[8%] h-[12%] rounded-[50%] bg-black/80 blur-2xl" />
-            <Image
-              src={image ?? SITE.heroImage}
-              alt="Superbike available at PikiPiki Market"
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-contain drop-shadow-[0_40px_60px_rgba(0,0,0,0.6)]"
-            />
+            <HeroSlider images={images.length ? images : [SITE.heroImage]} />
           </div>
 
           {spotlight && (
